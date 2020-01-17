@@ -379,7 +379,7 @@ MonoBehaviour:
   deathEffect: {fileID: 5218123973733839069}
   _healPower: 2
   _healPeriod: 2
-  _armor: 5
+  _armor: 1
 --- !u!1 &1910683293445444899
 GameObject:
   m_ObjectHideFlags: 0

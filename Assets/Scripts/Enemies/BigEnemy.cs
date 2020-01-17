@@ -19,7 +19,7 @@ public class BigEnemy : Enemy
 
     public override void TakeDamage(float damage)
     {
-        base.TakeDamage(damage - _armor);
+        base.TakeDamage(Mathf.Clamp(damage - _armor, 0, damage)); 
         model.transform.DOShakePosition(0.5f, 0.2f, 90);
     }
 

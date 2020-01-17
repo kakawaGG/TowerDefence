@@ -55,7 +55,7 @@ public class Tower : MonoBehaviour, IShootable
             projectile.LaunchProjectile(_shootPosition, enemies[0], _damage);
             _shootEffect.Play();
 
-            Debug.Log(gameObject.name +  " выстрелил в противника снарядом типа " + projectile.name);
+            Debug.Log(gameObject.name +  " выстрелил в противника снарядом типа " + projectile.name + " нанеся " + _damage + " урона");
         }
     }
 
