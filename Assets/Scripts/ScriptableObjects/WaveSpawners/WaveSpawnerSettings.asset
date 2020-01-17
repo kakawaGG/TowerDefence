@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: WaveSpawnerSettings
   m_EditorClassIdentifier: 
   timeBetweenWaves: 10
-  increaceStatPercentPerWave: 0
+  increaceStatPercentPerWave: 1

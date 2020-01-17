@@ -49,7 +49,7 @@ public class WaveSpawner : MonoBehaviour
             Destroy(wave.gameObject);
         }
         _waves.Clear();
-        //_wavesQueue.Clear();
+        _wavesQueue.Clear();
     }
 
     private IEnumerator WaveStartingSpawnEnemies()

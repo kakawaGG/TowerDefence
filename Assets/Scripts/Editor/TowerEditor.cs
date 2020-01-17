@@ -15,12 +15,6 @@ public class TowerEditor : Editor
             DrawDefaultInspector();
             Tower myTarget = (Tower)target;
 
-            //myTarget.experience = EditorGUILayout.IntField("Experience", myTarget.experience);
-            //EditorGUILayout.LabelField("Level", myTarget.Level.ToString());
-            if (GUILayout.Button("UpgradeTower"))
-            {
-
-            }
         }
     }
 }
