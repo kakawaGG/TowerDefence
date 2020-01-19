@@ -25,7 +25,7 @@ public class Tower : MonoBehaviour, IShootable
         StopAllCoroutines();
     }
 
-    protected virtual void Initialize() { }
+    protected virtual void Initialize() { enemies.Clear(); }
 
     private void OnTriggerEnter(Collider other)
     {

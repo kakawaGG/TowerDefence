@@ -28,7 +28,7 @@ public class Gamestats
 
     public static bool TrySpendGold(int gold)
     {
-        if (_gold - gold > 0)
+        if (_gold - gold >= 0)
         {
             _gold -= gold;
             GoldChanges?.Invoke(_gold);

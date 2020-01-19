@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Linq;
 
 [Serializable]
 public class TowerUpgrade
@@ -23,6 +24,7 @@ public class TowerUpgrade
 public class UpgradeableTower : Tower, ISelectable
 {
     private const string FULL_UPGRADED = "MAX UPGRADE";
+    private const string NOT_UPGRADED = "NONE UPGRADE";
 
     public delegate void OnUngraded(string nextUpgradeCost);
     public event OnUngraded Ungraded;
@@ -39,34 +41,50 @@ public class UpgradeableTower : Tower, ISelectable
 
     protected override void Initialize()
     {
-        _damage = _upgrades[0].UpgradeInfo.damage;
-        _fireRate = _upgrades[0].UpgradeInfo.fireRate;
-        UpgradeTower(_upgrades[0]); Ungraded?.Invoke(_upgrades[1].UpgradeInfo.cost.ToString());
+        base.Initialize();
+        if(_upgrades.Count > 0)
+            UpgradeTower(_upgrades.First());
+        else
+            Ungraded?.Invoke(NOT_UPGRADED);
     }
 
     private void TryUpgradeTower()
     {
-        // Попытка сделать новый апгрейд. Если:
-        // - такой апгрейд существует
-        // - текущий апгрейд не является максимальным
-        // - на апгрейд хватает ресурсов
-        // то происходит апгрейд путем показа модели и изменения параметров
+        bool isLastUpgrade = _curentUpgrade == _upgrades.Last() ? true : false;
 
-        int index = _upgrades.IndexOf(_curentUpgrade);
-        if (index != _upgrades.Count - 1 && Gamestats.TrySpendGold(_upgrades[index + 1].UpgradeInfo.cost))
+        if (!isLastUpgrade)
         {
-            UpgradeTower(_upgrades[index + 1]);
-            if (index + 2 > _upgrades.Count - 1) Ungraded?.Invoke(FULL_UPGRADED); else Ungraded?.Invoke(_upgrades[index + 2].UpgradeInfo.cost.ToString());
+            TowerUpgrade nextUpgrade = _upgrades[_upgrades.IndexOf(_curentUpgrade) + 1];
+            bool canBuyUpgrade = Gamestats.TrySpendGold(nextUpgrade.UpgradeInfo.cost);
+
+            if (canBuyUpgrade)
+            {
+                UpgradeTower(nextUpgrade);
+            }
         }
+
         Debug.Log("Попытка апгрейда зафиксирована");
     }
 
     private void UpgradeTower(TowerUpgrade towerUpgrade)
     {
-        _curentUpgrade = towerUpgrade;
-        _curentUpgrade.ShowUpgrade();
-        _damage = _curentUpgrade.UpgradeInfo.damage;
-        _fireRate = _curentUpgrade.UpgradeInfo.fireRate;
+        if (towerUpgrade != null)
+        {
+            _curentUpgrade = towerUpgrade;
+            _curentUpgrade.ShowUpgrade();
+            _damage = _curentUpgrade.UpgradeInfo.damage;
+            _fireRate = _curentUpgrade.UpgradeInfo.fireRate;
+
+            if (towerUpgrade == _upgrades.Last())
+            {
+                Ungraded?.Invoke(FULL_UPGRADED);
+            }
+            else
+            {
+                UpgradeInfo upgradeInfo = _upgrades[_upgrades.IndexOf(towerUpgrade) + 1].UpgradeInfo;
+                Ungraded?.Invoke(upgradeInfo.cost.ToString());
+            }
+        }
     }
 
     private void HideAllUpgrades()
@@ -84,11 +102,11 @@ public class UpgradeableTower : Tower, ISelectable
     public void DropUpgrades()
     {
         HideAllUpgrades();
-        UpgradeTower(_upgrades[0]); Ungraded?.Invoke(_upgrades[1].UpgradeInfo.cost.ToString());
+        Initialize();
     }
 
     public void DoWhenSelected()
     {
-        TryUpgradeTower();
+        if (_upgrades.Count > 0) TryUpgradeTower();
     }
 }
